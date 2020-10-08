@@ -48,6 +48,11 @@ public class Product {
     public String getId() {
         return this.id;
     }
+    
+     public void setId(String id) {
+        this.id = id;
+    }
+
 
     @DynamoDBRangeKey(attributeName = "name")
     public String getName() {

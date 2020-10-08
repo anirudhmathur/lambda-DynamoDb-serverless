@@ -32,7 +32,7 @@ public class CreateProductHandler implements RequestHandler<Map<String, Object>,
             logger.log(org.apache.logging.log4j.Level.WARN, input.get("name"));
             Product product = new Product();
             product.setName(input.get("name").toString());
-            product.setPrice((float) input.get("price"));
+            product.setPrice(((Double) input.get("price")).floatValue());
             product.save(product);
 
             // send the response back
