@@ -68,7 +68,7 @@ public class Product {
         return this.price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 

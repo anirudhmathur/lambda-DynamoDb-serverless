@@ -10,6 +10,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -19,43 +20,33 @@ import org.apache.logging.log4j.Logger;
  *
  * @author anirudh.mathur
  */
-public class CreateProductHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
+public class ListProductHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
 
     private Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
     public ApiGatewayResponse handleRequest(Map<String, Object> input, Context cntxt) {
-        try {
-            // get the 'body' from input
-
-            logger.log(Level.TRACE,"CreateProductHandler entered");
-            logger.log(Level.TRACE, "Body" + input.get("body"));
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree((String)input.get("body"));
-            logger.log(Level.TRACE, jsonNode.get("name").asText());
-            Product product = new Product();
-            product.setName(jsonNode.get("name").asText());
-            product.setPrice(((Double) jsonNode.get("price").asDouble()).floatValue());
-            product.save(product);
-
-            // send the response back
+        try {   
+            List<Product> productList = new Product().list();
             return ApiGatewayResponse.builder()
                     .setStatusCode(200)
-                    .setObjectBody(product)
+                    .setObjectBody(productList)
                     .setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & Serverless"))
                     .build();
 
         } catch (Exception ex) {
-            logger.error("Error in saving product Anirudh: " + ex);
+            logger.error("Error in listing product : " + ex);
 
             // send the error response back
-            Response responseBody = new Response("Error in saving product: ", input);
+            Response responseBody = new Response("Error in listing product: ", input);
             return ApiGatewayResponse.builder()
                     .setStatusCode(500)
                     .setObjectBody(responseBody)
                     .setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & Serverless"))
                     .build();
+
         }
+
     }
 
 }
