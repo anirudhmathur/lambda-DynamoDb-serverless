@@ -27,12 +27,15 @@ public class CreateProductHandler implements RequestHandler<Map<String, Object>,
     public ApiGatewayResponse handleRequest(Map<String, Object> input, Context cntxt) {
         try {
             // get the 'body' from input
+
             logger.error("CreateProductHandler entered");
-            logger.log(org.apache.logging.log4j.Level.WARN, "CreateProductHandler entered 343");
-            logger.log(org.apache.logging.log4j.Level.WARN, input.get("name"));
+            logger.log(org.apache.logging.log4j.Level.WARN, "Body" + input.get("body"));
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree((String)input.get("body"));
+            logger.log(org.apache.logging.log4j.Level.WARN, jsonNode.get("name").asText());
             Product product = new Product();
-            product.setName(input.get("name").toString());
-            product.setPrice(((Double) input.get("price")).floatValue());
+            product.setName(jsonNode.get("name").asText());
+            product.setPrice(((Double) jsonNode.get("price").asDouble()).floatValue());
             product.save(product);
 
             // send the response back
